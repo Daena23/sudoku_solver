@@ -38,20 +38,13 @@ class Field:
         gap_coord_in_matrix = self.convert_coord_line_to_matrix(square, gap_nums_in_line)
         return gap_coord_in_matrix
 
-    def convert_coord_line_to_matrix(self, square: List, gap_nums_in_line) -> List[List[int]]:
-        gaps_coord = []
-        line = square[2]
-        for cell_num_in_line in gap_nums_in_line:
-            row_suppl, cell_suppl = find_row_cell_suppl(cell_num_in_line)
-            row_num, cell_num = square[0] + row_suppl, square[1] + cell_suppl
-            gaps_coord.append([row_num, cell_num])
-        return gaps_coord
-
     def find_missing_digits(self, line) -> Union[int, List[int]]:
+        print('find_missing_digits', line)
+        for digit in range(1, len(self.matrix) + 1):
+            if digit not in line:
+                print('digit', digit, end=' ')
+        print()
         return [digit for digit in range(1, len(self.matrix) + 1) if digit not in line]
-
-    def extract_perpen_line(self, sample, cell_num: int) -> List[int]:
-        return [row[cell_num] for row in sample]
 
     def find_cross_row_column(self, coord):
         print('coord', coord)
@@ -63,6 +56,7 @@ class Field:
         return cross_row_column
 
     def visualize_matrix(self) -> None:
+        print()
         print('  ', end=' ')
         for num in range(len(self.matrix)):
             print(num, end='  ')
@@ -70,6 +64,7 @@ class Field:
         for row_num in range(len(self.matrix)):
             print(row_num, end=' ')
             print(self.matrix[row_num])
+        print()
 
     def check_win_condition(self) -> bool:
         return all([all([cell != 0 for cell in row]) for row in self.matrix])
@@ -78,12 +73,28 @@ class Field:
     def trans_matrix(self) -> List[List[int]]:
         return [[self.matrix[row][column] for row in range(len(self.matrix))] for column in range(len(self.matrix))]
 
-    def find_gaps_per_square(self) -> List[List[int]]:
-        return [row.count(0) for row in self.matrix]
+    @property
+    def gaps_per_square(self) -> List[List[int]]:
+        return [square[2].count(0) for square in self.all_squares]
 
-    def find_rows_to_explore(self, empty_cell_per_line: List[int]) -> List[int]:
+    @staticmethod
+    def find_rows_to_explore(empty_cell_per_line: List[int]) -> List[int]:
         rows_to_explore = []
         for cell_num in range(len(empty_cell_per_line)):
             if empty_cell_per_line[cell_num] == 2:
                 rows_to_explore.append(cell_num)
         return rows_to_explore
+
+    @staticmethod
+    def convert_coord_line_to_matrix(square: List, gap_nums_in_line) -> List[List[int]]:
+        gaps_coord = []
+        line = square[2]
+        for cell_num_in_line in gap_nums_in_line:
+            row_suppl, cell_suppl = find_row_cell_suppl(cell_num_in_line)
+            row_num, cell_num = square[0] + row_suppl, square[1] + cell_suppl
+            gaps_coord.append([row_num, cell_num])
+        return gaps_coord
+
+    @staticmethod
+    def extract_perpen_line(sample, cell_num: int) -> List[int]:
+        return [row[cell_num] for row in sample]

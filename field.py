@@ -4,7 +4,7 @@ from auxiliary_func import find_row_cell_suppl
 
 
 class Field:
-    def __init__(self, sample):
+    def __init__(self, sample: List[List[int]]):
         self.matrix = sample
 
     @property
@@ -47,7 +47,7 @@ class Field:
     def find_missing_digits(self, line) -> Union[int, List[int]]:
         return [digit for digit in range(1, len(self.matrix) + 1) if digit not in line]
 
-    def find_cross_row_column(self, coord):
+    def find_cross_row_column(self, coord: List[int]):
         row_num, cell_num = coord[0], coord[1]
         row_cells = self.matrix[row_num]
         column_cells = [row[cell_num] for row in self.matrix]
@@ -55,14 +55,25 @@ class Field:
         return cross_row_column
 
     def visualize_matrix(self) -> None:
-        print()
-        print('  ', end=' ')
+        print('     ', end=' ')
+        # Horizontal indexes
         for num in range(len(self.matrix)):
-            print(num, end='  ')
-        print()
+            print(num, end=' ')
+            if (num + 1) % 3 == 0:
+                print(end='   ')
+        # Vertical indexes
         for row_num in range(len(self.matrix)):
-            print(row_num, end=' ')
-            print(self.matrix[row_num])
+            if row_num % 3 == 0:
+                print()
+            print(row_num, end='   | ')
+            # Sample in triplets
+            for col_num in range(len(self.matrix[row_num])):
+                print(self.matrix[row_num][col_num], end='')
+                if (col_num + 1) % 3 == 0:
+                    print( ' | ', end=' ')
+                else:
+                    print(end=' ')
+            print()
         print()
 
     def check_win_condition(self) -> bool:
@@ -79,7 +90,6 @@ class Field:
     @staticmethod
     def convert_coord_line_to_matrix(square: List, gap_nums_in_line) -> List[List[int]]:
         gaps_coord = []
-        line = square[2]
         for cell_num_in_line in gap_nums_in_line:
             row_suppl, cell_suppl = find_row_cell_suppl(cell_num_in_line)
             row_num, cell_num = square[0] + row_suppl, square[1] + cell_suppl
@@ -87,5 +97,5 @@ class Field:
         return gaps_coord
 
     @staticmethod
-    def extract_perpen_line(sample, cell_num: int) -> List[int]:
+    def extract_perpen_line(sample: List[List[int]], cell_num: int) -> List[int]:
         return [row[cell_num] for row in sample]

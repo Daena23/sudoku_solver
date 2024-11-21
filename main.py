@@ -1,28 +1,33 @@
 from field import Field
-from main_func import fill_gap, update_matrix
-from samples import trial
+from main_func import find_missing_digit
+from samples import (hard_sudoku_1, hard_sudoku_1_solved,
+                     easy_sudoku_1_solved, easy_sudoku_1)
 
 
 def main():
-    field = Field(trial)
+    field = Field(hard_sudoku_1)
+    solved_sudoku = hard_sudoku_1_solved
     cycle_num = 0
     while not field.check_win_condition():
-        print('cycle_num', cycle_num)
         field.visualize_matrix()
-        # a = input()
-        row_num, cell_num, missing_digit = fill_gap(field)
+        row_num, cell_num, missing_digit = find_missing_digit(field)
         if None in (row_num, cell_num, missing_digit):
-            print('Unable to identify new number')
+            print('Can\'t solve this sudoku :(')
             break
         else:
-            print('row_num:', row_num, ', cell_num:', cell_num, ', missing_digit:', missing_digit)
-            update_matrix(field, row_num, cell_num, missing_digit)
+            print(f'row: {row_num}, column: {cell_num}, missing digit: {missing_digit}')
+            field.matrix[row_num][cell_num] = missing_digit
         cycle_num += 1
-
-    field.visualize_matrix()
     if field.check_win_condition():
-        print('You won!')
+        field.visualize_matrix()
+        print(f'{cycle_num} gaps have been filled')
+        print('SOLVED')
 
+    # Test
+    if field.matrix == solved_sudoku:
+        print('Correct answer')
+    else:
+        print('Wrong answer')
 
 if __name__ == '__main__':
     main()

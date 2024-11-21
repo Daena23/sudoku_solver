@@ -10,11 +10,13 @@ def indentify_if_trans(field: Field, line_num_to_study: int) -> Tuple[List[List[
         return field.trans_matrix, True
 
 
-def find_line_param(field: Field, line_num_to_study: int) -> Tuple[List[List[int]],
-                                                                   bool,
-                                                                   int,
-                                                                   List[int],
-                                                                   List[int]]:
+def find_line_param(field: Field, line_num_to_study: int) -> (
+        Tuple[List[List[int]],
+        bool,
+        int,
+        List[int],
+        List[int]],
+):
     sample, is_trans = indentify_if_trans(field, line_num_to_study)
     row_num = line_num_to_study if not is_trans else line_num_to_study - len(field.matrix)
     row = sample[row_num]
@@ -74,7 +76,7 @@ def search_multi_gap_in_squares(field: Field):
     return None, None, None
 
 
-def fill_gap(field: Field) -> Tuple[int, int, int]:
+def find_missing_digit(field: Field) -> Tuple[int, int, int]:
     if 1 in field.gap_in_lines:
         return search_single_gap_in_line(field)
     elif 1 in field.gaps_per_square:
@@ -84,7 +86,3 @@ def fill_gap(field: Field) -> Tuple[int, int, int]:
         if None in (row_num_to_fill, cell_num_to_fill, digit):
             row_num_to_fill, cell_num_to_fill, digit = search_multi_gap_in_squares(field)
     return row_num_to_fill, cell_num_to_fill, digit
-
-
-def update_matrix(field: Field, row_num: int, cell_num: int, missing_digit):
-    field.matrix[row_num][cell_num] = missing_digit
